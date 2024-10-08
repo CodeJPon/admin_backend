@@ -44,3 +44,30 @@ function addMySql (services) {
       services.mysqlPool.addOld(setting); // obsolete
   }  
 }
+// 建立Redis服务
+async function addRedis (services) {
+  // redis
+  const Redis = require('../../libs/providers/redisClient', host.logger);
+
+  if (!services.configs.db?.repositories?.redis) {
+      return;
+  }
+  for (const setting of services.configs.db.repositories.redis) {
+      const option = {
+          host: setting.host,
+          port: +setting.port,
+          db: +setting.database,
+          keyPrefix: setting.prefixKey,
+          password: setting.password
+      };
+      try {
+          if (!services.redis) services.redis = {};
+          services.redis[setting.name] = new Redis(option);
+          await services.redis[setting.name].ping();
+          await services.redis[setting.name].connect();
+      } catch (error) {
+          host.logger.error(`Redis client ${setting.name} connect failed: ${error.message} 。 connection: ${JSON.stringify(option)}`);
+          process.exit();
+      }
+  }
+}
