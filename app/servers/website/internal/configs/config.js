@@ -12,11 +12,11 @@ module.exports = {
             }
         }
     },
-    // gameApiServer: {
-    //     api: {
-    //         url: envConfig.gameApi.apiUrl
-    //     }
-    // },
+    gameApiServer: {
+        api: {
+            url: envConfig.gameApi.apiUrl
+        }
+    },
     // interdepartmentalServer: {
     //     api: {
     //         url: `${envConfig.interdepartmental.host}:${envConfig.interdepartmental.port}`

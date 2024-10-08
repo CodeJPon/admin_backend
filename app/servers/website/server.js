@@ -17,6 +17,8 @@ const namespace = createNamespace('dashboard.platform');
 host.configuration(configuration)
 .addService(addNodeCache)
 .addService(addMySql)
+.addService(addRedis)
+.addService(addGameApiClient)
 
 console.log('host', host.services.mysqlPool)
 // 取設定檔
@@ -69,5 +71,19 @@ async function addRedis (services) {
           host.logger.error(`Redis client ${setting.name} connect failed: ${error.message} 。 connection: ${JSON.stringify(option)}`);
           process.exit();
       }
+  }
+}
+// 建立与GameApi沟通的服务
+function addGameApiClient (services) {
+  const Driver = require('../../libs/providers/gameApiClient');
+  if (!services.configs?.rpc || !services.configs?.config?.gameApiServer) {
+      return;
+  }
+  try {
+      services.gameApiClient = new Driver(services.configs.config.gameApiServer, host.logger);
+      services.gameApiClient.initRpcClient(services.configs.rpc).then(() => host.logger.info('rpc client init success'));
+  } catch (error) {
+      host.logger.error(`Init game api client failed: 建立与GameApi沟通的服务失败。${error.message}`);
+      process.exit();
   }
 }

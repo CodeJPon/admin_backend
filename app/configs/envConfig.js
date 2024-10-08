@@ -60,6 +60,25 @@ module.exports = Object.freeze({
         }
     })()
   },
+  gameApi: {
+    apiUrl: process.env.GAME_API_SERVER,
+    rpc: {
+        platform: {
+            host: process.env.GAME_API_RPC_PLATFORM_HOST,
+            port: process.env.GAME_API_RPC_PLATFORM_PORT
+        },
+        playerInfo: (function () {
+            const playerInfoHost = process.env.GAME_API_RPC_PLAYERINFO_HOST;
+            const playerInfoPorts = [7000, 7500, 7600, 7700, 7800, 7900, 7930, 7940, 7950];// process.env.GAME_API_RPC_PLAYERINFO_PORTS.split(',');
+            const result = [];
+            for (const port of playerInfoPorts) {
+                result.push({ host: playerInfoHost, port: port });
+            }
+            return result;
+        })(),
+
+    }
+  },
   gameHandle: process.env.GAME_API_GAMEHANDLE_HOST,
   mysql: {
     default: {
